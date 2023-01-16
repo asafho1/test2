@@ -1,28 +1,20 @@
-name: CreateRelease
- 
+name: Build
 on:
   push:
-    # Sequence of patterns matched against refs/heads
-
-env:
-    release_version_tag : ""
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
-  steps:
-  
-     runs-on: ubuntu-latest
-     steps:
-     - uses: actions/checkout@v3
-     - name: print branch
-       run: |
-                echo "${{ github.base_ref }}"
-     - name: SonarCloud Scan
-       uses: sonarsource/sonarcloud-github-action@master
-       env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-       with:
-        args: >
-           -Dsonar.organization=${{ secrets.SONAR_ORG }}
-           -Dsonar.projectKey=${{ secrets.SONAR_KEY }}
-           -Dsonar.verbose=true
-           -Dsonar.pullrequest.github.summary_comment=true
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
