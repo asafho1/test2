@@ -22,7 +22,7 @@ jobs:
          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
        with:
         args: >
-           -Dsonar.organization=${{ secrets.SONAR-ORG }}
+           -Dsonar.organization=${{ secrets.SONAR_ORG }}
            -Dsonar.projectKey=${{ secrets.SONAR_KEY }}
            -Dsonar.verbose=true
            -Dsonar.pullrequest.github.summary_comment=true
